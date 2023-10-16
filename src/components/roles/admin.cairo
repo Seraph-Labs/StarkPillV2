@@ -58,7 +58,7 @@ mod AdminRoleComponent {
         +HasComponent<TContractState>,
         +AccessControlComponent::HasComponent<TContractState>,
         +Drop<TContractState>
-    > of IAdminRoleTrait<TContractState> {
+    > of IAdminRoleImplTrait<TContractState> {
         #[inline(always)]
         fn grant_admin_role(ref self: ComponentState<TContractState>, account: ContractAddress) {
             let mut access_control = self.get_access_control_mut();
