@@ -30,7 +30,7 @@ mod UpgradeableComponent {
     //                                  Embedable                                 //
     // -------------------------------------------------------------------------- //
 
-    #[embeddable_as(UpgradableImpl)]
+    #[embeddable_as(UpgradeableImpl)]
     impl Upgradeable<
         TContractState,
         +HasComponent<TContractState>,
