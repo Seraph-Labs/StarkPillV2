@@ -16,7 +16,7 @@ const BG_SLOT: u256 = 3_u256;
 
 // starkpill attr_ids
 // string type
-const NAME_ID: u64 = 1_u64; // name, list_id = 1
+const NAME_ID: u64 = 1_u64; // "name", list_id = 1
 const ING_ID: u64 = 2_u64; // "Ingredient", list_id = 2
 const BG_ID: u64 = 3_u64; // "Background" , list_id = 3 
 
