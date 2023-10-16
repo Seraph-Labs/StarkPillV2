@@ -59,8 +59,9 @@ trait IStarkPill<TContractState> {
     fn scalar_remove_from(ref self: TContractState, from_token_id: u256, token_id: u256);
 
     // slot attributes
-    fn slot_attributes_of(self: @TContractState, slot_id: u256) -> Span<u64>;
+    fn slot_attribute_value(self: @TContractState, slot_id: u256, attr_id: u64) -> felt252;
 
+    fn slot_attributes_of(self: @TContractState, slot_id: u256) -> Span<u64>;
     // inventory
     fn equipped_attribute_value(self: @TContractState, token_id: u256, attr_id: u64) -> felt252;
 
@@ -435,6 +436,11 @@ mod StarkPill {
         }
 
         // ----------------------------- slot attribute ----------------------------- //
+
+        fn slot_attribute_value(self: @ContractState, slot_id: u256, attr_id: u64) -> felt252 {
+            self.erc2114_slot_attr.slot_attribute_value(slot_id, attr_id)
+        }
+
         fn slot_attributes_of(self: @ContractState, slot_id: u256) -> Span<u64> {
             self.erc2114_slot_attr.slot_attributes_of(slot_id)
         }
