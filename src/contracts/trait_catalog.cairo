@@ -3,6 +3,7 @@ mod SPillTraitCatalog {
     use starkpill::components::roles::admin::AdminRoleComponent::AdminRoleInternalTrait;
     use starknet::{ContractAddress, get_caller_address};
     use starkpill::constants;
+    use starkpill::components::upgradeable::UpgradeableComponent;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
     use seraphlabs::tokens::erc2114::extensions::TraitCatalogComponent;
@@ -11,6 +12,7 @@ mod SPillTraitCatalog {
     use AdminRoleComponent::{AdminRoleInitializerImpl, AdminRoleInternalImpl};
     use TraitCatalogComponent::{ITraitCatalogImpl, TraitCatalogInitializerImpl};
 
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
     // access
     component!(path: AccessControlComponent, storage: access_control, event: AccessControlEvent);
     component!(path: AdminRoleComponent, storage: admin_role, event: AdminRoleEvent);
@@ -24,12 +26,16 @@ mod SPillTraitCatalog {
     #[abi(embed_v0)]
     impl SRC5 = SRC5Component::SRC5Impl<ContractState>;
 
+    #[abi(embed_v0)]
+    impl Upgradeable = UpgradeableComponent::UpgradeableImpl<ContractState>;
     // -------------------------------------------------------------------------- //
     //                                   Storage                                  //
     // -------------------------------------------------------------------------- //
 
     #[storage]
     struct Storage {
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage,
         #[substorage(v0)]
         access_control: AccessControlComponent::Storage,
         #[substorage(v0)]
@@ -47,6 +53,7 @@ mod SPillTraitCatalog {
     #[event]
     #[derive(Drop, PartialEq, starknet::Event)]
     enum Event {
+        UpgradeableEvent: UpgradeableComponent::Event,
         AccessControlEvent: AccessControlComponent::Event,
         AdminRoleEvent: AdminRoleComponent::Event,
         SRC5Event: SRC5Component::Event,

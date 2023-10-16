@@ -4,6 +4,7 @@ mod SPillSystemRegistry {
     use starknet::{ContractAddress, ClassHash};
     use starknet::{get_caller_address, get_contract_address};
     use souk::systems::utils::SystemInfo;
+    use starkpill::components::upgradeable::UpgradeableComponent;
     use seraphlabs::tokens::src5::SRC5Component;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
@@ -12,6 +13,7 @@ mod SPillSystemRegistry {
     use AccessControlComponent::{AccessControlInitializerImpl};
     use AdminRoleComponent::{AdminRoleInitializerImpl, AdminRoleInternalImpl};
 
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
     component!(path: AccessControlComponent, storage: access_control, event: AccessControlEvent);
     component!(path: AdminRoleComponent, storage: admin_role, event: AdminRoleEvent);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
@@ -23,12 +25,16 @@ mod SPillSystemRegistry {
     #[abi(embed_v0)]
     impl SRC5 = SRC5Component::SRC5Impl<ContractState>;
 
+    #[abi(embed_v0)]
+    impl Upgradeable = UpgradeableComponent::UpgradeableImpl<ContractState>;
     // -------------------------------------------------------------------------- //
     //                                   Storage                                  //
     // -------------------------------------------------------------------------- //
 
     #[storage]
     struct Storage {
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage,
         #[substorage(v0)]
         access_control: AccessControlComponent::Storage,
         #[substorage(v0)]
@@ -46,6 +52,7 @@ mod SPillSystemRegistry {
     #[event]
     #[derive(Drop, PartialEq, starknet::Event)]
     enum Event {
+        UpgradeableEvent: UpgradeableComponent::Event,
         AccessControlEvent: AccessControlComponent::Event,
         AdminRoleEvent: AdminRoleComponent::Event,
         SRC5Event: SRC5Component::Event,

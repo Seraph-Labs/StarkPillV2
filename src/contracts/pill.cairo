@@ -100,6 +100,9 @@ trait IStarkPill<TContractState> {
         system_id: u128,
         system_calldata: Array<felt252>
     ) -> Span<felt252>;
+
+    // ------------------------------- upgradable ------------------------------- //
+    fn upgrade(ref self: TContractState, new_class_hash: ClassHash);
 }
 
 #[starknet::contract]
@@ -111,6 +114,7 @@ mod StarkPill {
     use starknet::get_caller_address;
     use starkpill::constants;
 
+    use starkpill::components::upgradeable::UpgradeableComponent;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
     // token components
@@ -142,6 +146,7 @@ mod StarkPill {
     // souk impls
     use SoukTermComponent::{SoukTermInitializerImpl, ISoukTermImpl};
 
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
     // access
     component!(path: AccessControlComponent, storage: access_control, event: AccessControlEvent);
     component!(path: AdminRoleComponent, storage: admin_role, event: AdminRoleEvent);
@@ -175,12 +180,19 @@ mod StarkPill {
     impl ERC721Metadata =
         ERC721MetadataComponent::ERC721MetadataImpl<ContractState>;
 
+    // ------------------------------- upgradeable ------------------------------ //
+
+    #[abi(embed_v0)]
+    impl Upgradeable = UpgradeableComponent::UpgradeableImpl<ContractState>;
+
     // -------------------------------------------------------------------------- //
     //                                   Storage                                  //
     // -------------------------------------------------------------------------- //
 
     #[storage]
     struct Storage {
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage,
         // access
         #[substorage(v0)]
         access_control: AccessControlComponent::Storage,
@@ -216,6 +228,7 @@ mod StarkPill {
     #[event]
     #[derive(Drop, PartialEq, starknet::Event)]
     enum Event {
+        UpgradeableEvent: UpgradeableComponent::Event,
         // access
         AccessControlEvent: AccessControlComponent::Event,
         AdminRoleEvent: AdminRoleComponent::Event,
