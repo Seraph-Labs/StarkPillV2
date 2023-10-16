@@ -1,5 +1,6 @@
 #[starknet::component]
 mod AccessControlComponent {
+    use core::zeroable::Zeroable;
     use starkpill::components::access::interface;
     use starkpill::constants;
     use seraphlabs::tokens::src5::SRC5Component;
@@ -161,6 +162,7 @@ mod AccessControlComponent {
             ref self: ComponentState<TContractState>, role: felt252, account: ContractAddress
         ) {
             let caller: ContractAddress = get_caller_address();
+            assert(caller.is_non_zero(), 'Invalid Caller');
             assert(caller == account, Errors::INVALID_RENOUNCE);
             self._revoke_role(role, account);
         }
@@ -184,6 +186,7 @@ mod AccessControlComponent {
         #[inline(always)]
         fn _assert_only_role(self: @ComponentState<TContractState>, role: felt252) {
             let caller: ContractAddress = get_caller_address();
+            assert(caller.is_non_zero(), 'Invalid Caller');
             let authorized: bool = self._has_role(role, caller);
             assert(authorized, Errors::MISSING_ROLE);
         }

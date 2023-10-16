@@ -88,6 +88,7 @@ mod AdminRoleComponent {
         #[inline(always)]
         fn _assert_only_admin(self: @ComponentState<TContractState>) {
             let caller = get_caller_address();
+            assert(caller.is_non_zero(), 'Invalid Caller');
             let authorized = self.get_access_control()._has_role(constants::ADMIN_ROLE, caller);
             assert(authorized, "caller not admin");
         }
