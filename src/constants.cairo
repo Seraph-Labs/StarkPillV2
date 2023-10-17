@@ -9,6 +9,9 @@ const IACCESSCONTROL_ID: felt252 =
 const DEFAULT_ADMIN_ROLE: felt252 = 0;
 const ADMIN_ROLE: felt252 = 'ADMIN_ROLE';
 
+// ---------------------------------- Price --------------------------------- //
+const PILL_BASE_PRICE: u256 = 1000_u256;
+
 // ---------------------------------- Slots --------------------------------- //
 const PILL_SLOT: u256 = 1_u256;
 const ING_SLOT: u256 = 2_u256;
