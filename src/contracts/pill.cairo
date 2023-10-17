@@ -100,14 +100,24 @@ trait IStarkPill<TContractState> {
         system_id: u128,
         system_calldata: Array<felt252>
     ) -> Span<felt252>;
-
+    // -------------------------------- Pharmacy -------------------------------- //
+    fn get_stock(self: @TContractState, attr_id: u64, index: felt252) -> (u128, u128);
+    fn get_eth_premium(self: @TContractState, attr_id: u64, index: felt252) -> u256;
+    fn update_stock(ref self: TContractState, attr_id: u64, index: felt252, ammount: u128);
+    fn update_premium(ref self: TContractState, attr_id: u64, index: felt252, ammount: u256);
+    fn set_l2_project_redemtion(
+        ref self: TContractState,
+        project_address: ContractAddress,
+        attr_id: u64,
+        indexes: Span<felt252>,
+        redeemable: bool
+    );
     // ------------------------------- upgradable ------------------------------- //
     fn upgrade(ref self: TContractState, new_class_hash: ClassHash);
 }
 
 #[starknet::contract]
 mod StarkPill {
-    use core::zeroable::Zeroable;
     use super::{ContractAddress, ClassHash};
     use super::AttrType;
     use super::{SystemStatus, SystemStatusTrait};
@@ -117,6 +127,7 @@ mod StarkPill {
     use starkpill::components::upgradeable::UpgradeableComponent;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
+    use starkpill::components::pharmacy::PharmacyComponent;
     // token components
     use seraphlabs::tokens::src5::SRC5Component;
     use seraphlabs::tokens::erc721::{ERC721Component, extensions::ERC721EnumComponent};
@@ -128,6 +139,8 @@ mod StarkPill {
     // souk components
     use souk::systems::SoukTermComponent;
 
+    // pharmacy impls
+    use PharmacyComponent::PharmacyInitializerImpl;
     // access impls
     use AccessControlComponent::{AccessControlInitializerImpl};
     use AdminRoleComponent::{AdminRoleInitializerImpl, AdminRoleInternalImpl};
@@ -150,6 +163,8 @@ mod StarkPill {
     // access
     component!(path: AccessControlComponent, storage: access_control, event: AccessControlEvent);
     component!(path: AdminRoleComponent, storage: admin_role, event: AdminRoleEvent);
+    // pharmacy
+    component!(path: PharmacyComponent, storage: pharmacy, event: PharmacyEvent);
     // tokens
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
     component!(path: ERC721MetadataComponent, storage: erc721_metadata, event: ERC721MetadataEvent);
@@ -180,6 +195,11 @@ mod StarkPill {
     impl ERC721Metadata =
         ERC721MetadataComponent::ERC721MetadataImpl<ContractState>;
 
+    // -------------------------------- pharmacy -------------------------------- //
+
+    #[abi(embed_v0)]
+    impl Pharmacy = PharmacyComponent::PharmacyImpl<ContractState>;
+
     // ------------------------------- upgradeable ------------------------------ //
 
     #[abi(embed_v0)]
@@ -198,6 +218,9 @@ mod StarkPill {
         access_control: AccessControlComponent::Storage,
         #[substorage(v0)]
         admin_role: AdminRoleComponent::Storage,
+        // pharmacy
+        #[substorage(v0)]
+        pharmacy: PharmacyComponent::Storage,
         // introspection
         #[substorage(v0)]
         src5: SRC5Component::Storage,
@@ -232,6 +255,8 @@ mod StarkPill {
         // access
         AccessControlEvent: AccessControlComponent::Event,
         AdminRoleEvent: AdminRoleComponent::Event,
+        // pharmacy
+        PharmacyEvent: PharmacyComponent::Event,
         // introspection
         SRC5Event: SRC5Component::Event,
         // tokens
