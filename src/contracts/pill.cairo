@@ -278,6 +278,8 @@ mod StarkPill {
     fn constructor(
         ref self: ContractState,
         admin: ContractAddress,
+        wallet: ContractAddress,
+        currency: ContractAddress,
         name: felt252,
         symbol: felt252,
         trait_catalog: ContractAddress
@@ -291,6 +293,9 @@ mod StarkPill {
         self.access_control.initializer(admin);
         // grants ADMIN_ROLE = 'ADMIN_ROLE', to admin
         self.admin_role.initializer(admin);
+        // pharmacy
+        // @dev emits 1 PharmacyPremium event
+        self.pharmacy.initializer(currency, wallet, constants::PILL_BASE_PRICE);
         // tokens
         self.erc721.initializer();
         self.erc721_metadata.initializer(name, symbol);
