@@ -1,10 +1,10 @@
 [package]
 name = "starkpill"
 version = "0.1.0"
-cairo-verrsion = "2.3.0-rc0"
+cairo-version = "2.3.0-rc0"
 description = "starkpill contracts in cairo-2"
 
 [dependencies]
 starknet = "2.3.0-rc0"
 seraphlabs = {git = "https://github.com/Seraph-Labs/Cairo-Contracts.git", branch = "release-v0.4.1-rc0"}
-souk = {git = "https://github.com/Seraph-Labs/Souk-Libs", branch = "release-v0.0.1"}
+souk = {git = "https://github.com/Seraph-Labs/Souk-Libs.git", branch = "release-v0.0.1"}
