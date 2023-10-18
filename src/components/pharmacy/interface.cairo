@@ -2,7 +2,6 @@ use starknet::ContractAddress;
 
 #[starknet::interface]
 trait IPharmacy<TContractState> {
-    // @return (numerator denominator) of stock etc 1/2
     fn get_stock(self: @TContractState, attr_id: u64, index: felt252) -> (u128, u128);
     fn get_eth_premium(self: @TContractState, attr_id: u64, index: felt252) -> u256;
     fn update_stock(ref self: TContractState, attr_id: u64, index: felt252, ammount: u128);

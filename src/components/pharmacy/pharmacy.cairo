@@ -1,7 +1,5 @@
 #[starknet::component]
 mod PharmacyComponent {
-    use core::array::SpanTrait;
-    use core::zeroable::Zeroable;
     use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starkpill::constants;
@@ -80,6 +78,7 @@ mod PharmacyComponent {
     // -------------------------------------------------------------------------- //
     //                                 Embeddable                                 //
     // -------------------------------------------------------------------------- //
+
     #[embeddable_as(PharmacyImpl)]
     impl Pharmacy<
         TContractState,
@@ -131,7 +130,7 @@ mod PharmacyComponent {
 
     #[generate_trait]
     impl PharmacyInitializerImpl<
-        TContractState, +HasComponent<TContractState>
+        TContractState, +HasComponent<TContractState>,
     > of PharmacyInitializerTrait<TContractState> {
         #[inline(always)]
         fn initializer(
@@ -166,15 +165,14 @@ mod PharmacyComponent {
         fn get_stock(
             self: @ComponentState<TContractState>, attr_id: u64, index: felt252
         ) -> (u128, u128) {
-            let stock: PharmacyStock = self.spill_pharmacy_stock.read((attr_id, index));
-            (stock.numerator, stock.denominator)
+            self._get_stock(attr_id, index)
         }
 
         #[inline(always)]
         fn get_eth_premium(
             self: @ComponentState<TContractState>, attr_id: u64, index: felt252
         ) -> u256 {
-            self.spill_pharmacy_eth_premium.read((attr_id, index))
+            self._get_eth_premium(attr_id, index)
         }
 
         #[inline(always)]
@@ -249,7 +247,7 @@ mod PharmacyComponent {
         }
 
         #[inline(always)]
-        fn _assert_can_redeem(
+        fn _assert_reedemable(
             self: @ComponentState<TContractState>,
             project_address: ContractAddress,
             attr_id: u64,
@@ -262,6 +260,22 @@ mod PharmacyComponent {
         }
 
         #[inline(always)]
+        fn _get_stock(
+            self: @ComponentState<TContractState>, attr_id: u64, index: felt252
+        ) -> (u128, u128) {
+            let stock: PharmacyStock = self.spill_pharmacy_stock.read((attr_id, index));
+            (stock.numerator, stock.denominator)
+        }
+
+        #[inline(always)]
+        fn _get_eth_premium(
+            self: @ComponentState<TContractState>, attr_id: u64, index: felt252
+        ) -> u256 {
+            self.spill_pharmacy_eth_premium.read((attr_id, index))
+        }
+
+        // @dev pill total cost is just the base cost of having the name attribute set to pill
+        #[inline(always)]
         fn _get_pill_eth_total_cost(self: @ComponentState<TContractState>, index: felt252) -> u256 {
             if index.is_zero() {
                 return 0;
@@ -270,6 +284,8 @@ mod PharmacyComponent {
             self.spill_pharmacy_eth_premium.read((constants::NAME_ID, 1))
         }
 
+        // @dev ingredient total cost is the base cost which is name attribute set to ingredient (should cost 0)
+        //  plus the premium to get the ingredient attribute set to the given index
         #[inline(always)]
         fn _get_ing_eth_total_cost(self: @ComponentState<TContractState>, index: felt252) -> u256 {
             if index.is_zero() {
@@ -280,6 +296,8 @@ mod PharmacyComponent {
             base_price + premium
         }
 
+        // @dev background total cost is the base cost which is name attribute set to background (should cost 0)
+        //  plus the premium to get the background attribute set to the given index
         #[inline(always)]
         fn _get_bg_eth_total_cost(self: @ComponentState<TContractState>, index: felt252) -> u256 {
             if index.is_zero() {
@@ -363,6 +381,9 @@ mod PharmacyComponent {
         //  DOES check if there is enough eth
         //  DOES check validity of wallet and currency address
         //  DOES not check validity of spender address
+        //  DOES not check validity of item that is bought
+        // @return the the total eth spent on pill including tips, for pills medical bill trait
+        //  which is `price` - ing_total_cost - bg_total_cost
         #[inline(always)]
         fn _pharmacy_eth_purchase(
             ref self: ComponentState<TContractState>,
@@ -371,16 +392,18 @@ mod PharmacyComponent {
             ing: felt252,
             bg: felt252,
             price: u256
-        ) {
+        ) -> u256 {
             let pill_price = self._get_pill_eth_total_cost(pill);
             let ing_price = self._get_ing_eth_total_cost(ing);
             let bg_price = self._get_bg_eth_total_cost(bg);
-
-            let total_cost = pill_price + ing_price + bg_price;
+            let total_trait_cost = ing_price + bg_price;
+            let total_cost = pill_price + total_trait_cost;
             // assert price is not lower than the total cost
             assert(price >= total_cost, 'SPill: minimum price not met');
+            // get price spent on pill
+            let pill_mbill = price - total_trait_cost;
             if price.is_zero() {
-                return;
+                return pill_mbill;
             }
             // if not try and purchase with eth
             let currency = self._get_pharmacy_eth_currency();
@@ -389,6 +412,7 @@ mod PharmacyComponent {
             // transfer erh
             let success = eth.transfer_from(spender, wallet, price);
             assert(success, 'SPill: eth transfer failed');
+            pill_mbill
         }
 
         // @dev sells a stock of a given slot and index
@@ -401,6 +425,7 @@ mod PharmacyComponent {
         ) {
             let mut stock = self.spill_pharmacy_stock.read((attr_id, index));
             // this function already checks if there is stock to sell
+            // if stock is infinite return
             let is_sold = stock.sell_stock();
             if is_sold {
                 self._update_pharmacy_stock(attr_id, index, stock);
@@ -521,7 +546,7 @@ mod PharmacyComponent {
         +Drop<TContractState>
     > of GetAdminRoleTrait<TContractState> {
         #[inline(always)]
-        fn get_role_admin(
+        fn get_admin_role(
             self: @ComponentState<TContractState>
         ) -> @AdminRoleComponent::ComponentState<TContractState> {
             let contract = self.get_contract();

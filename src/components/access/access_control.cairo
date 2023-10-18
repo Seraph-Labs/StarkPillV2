@@ -1,6 +1,5 @@
 #[starknet::component]
 mod AccessControlComponent {
-    use core::zeroable::Zeroable;
     use starkpill::components::access::interface;
     use starkpill::constants;
     use seraphlabs::tokens::src5::SRC5Component;

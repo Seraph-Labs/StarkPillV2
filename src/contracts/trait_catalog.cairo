@@ -1,6 +1,5 @@
 #[starknet::contract]
 mod SPillTraitCatalog {
-    use starkpill::components::roles::admin::AdminRoleComponent::AdminRoleInternalTrait;
     use starknet::{ContractAddress, get_caller_address};
     use starkpill::constants;
     use starkpill::components::upgradeable::UpgradeableComponent;

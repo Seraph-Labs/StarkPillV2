@@ -8,6 +8,7 @@ trait IUpgradeable<TContractState> {
 #[starknet::component]
 mod UpgradeableComponent {
     use super::ClassHash;
+    use super::IUpgradeable;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
     use AdminRoleComponent::AdminRoleInternalImpl;
@@ -37,7 +38,7 @@ mod UpgradeableComponent {
         +AccessControlComponent::HasComponent<TContractState>,
         +AdminRoleComponent::HasComponent<TContractState>,
         +Drop<TContractState>
-    > of super::IUpgradeable<ComponentState<TContractState>> {
+    > of IUpgradeable<ComponentState<TContractState>> {
         fn upgrade(ref self: ComponentState<TContractState>, new_class_hash: ClassHash) {
             IUpgradeableImpl::upgrade(ref self, new_class_hash);
         }
@@ -92,7 +93,7 @@ mod UpgradeableComponent {
         +Drop<TContractState>
     > of GetAdminRoleTrait<TContractState> {
         #[inline(always)]
-        fn get_role_admin(
+        fn get_admin_role(
             self: @ComponentState<TContractState>
         ) -> @AdminRoleComponent::ComponentState<TContractState> {
             let contract = self.get_contract();
