@@ -121,9 +121,9 @@ mod StarkPill {
     use super::{ContractAddress, ClassHash};
     use super::AttrType;
     use super::{SystemStatus, SystemStatusTrait};
+    use starkpill::components::pharmacy::utils::{PharmacyStock, PharmacyStockTrait};
     use starknet::get_caller_address;
     use starkpill::constants;
-
     use starkpill::components::upgradeable::UpgradeableComponent;
     use starkpill::components::access::AccessControlComponent;
     use starkpill::components::roles::AdminRoleComponent;
@@ -284,8 +284,8 @@ mod StarkPill {
         symbol: felt252,
         trait_catalog: ContractAddress
     ) {
-        assert(get_caller_address().is_non_zero(), "Invalid Caller");
-        assert(admin.is_non_zero(), "Invalid admin");
+        assert(get_caller_address().is_non_zero(), 'Invalid Caller');
+        assert(admin.is_non_zero(), 'Invalid admin');
         // ------------------------------- initalizers ------------------------------ //
         // access
         // @dev emits 2 RoleGranted event

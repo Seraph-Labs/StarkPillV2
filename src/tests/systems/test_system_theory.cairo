@@ -179,6 +179,40 @@ mod MockSystem2 {
     }
 }
 
+#[starknet::contract]
+mod MockSystem3 {
+    use super::{ContractAddress, ClassHash};
+    use super::{get_caller_address, get_contract_address};
+    use super::library_call_syscall;
+    use super::Selectors;
+
+    #[storage]
+    struct Storage {
+        diff_arg_2: felt252
+    }
+
+    #[event]
+    #[derive(Drop, PartialEq, starknet::Event)]
+    enum Event {
+        RandEmit: RandEmit,
+    }
+
+    #[derive(Drop, PartialEq, starknet::Event)]
+    struct RandEmit {
+        #[key]
+        res: felt252,
+    }
+
+    #[generate_trait]
+    #[external(v0)]
+    impl IMockSystemImpl of IMockSystemTrait {
+        fn initializer(ref self: ContractState) {
+            self.diff_arg_2.write(2114);
+            self.emit(RandEmit { res: 2114 });
+        }
+    }
+}
+
 
 fn setup() -> ContractAddress {
     let mut calldata = ArrayTrait::new();
@@ -289,6 +323,25 @@ fn test_system_execution() {
     helper::assert_no_events_left(mock_address);
 }
 
+#[test]
+#[available_gas(2000000000)]
+fn test_other_events_emit() {
+    let mock_address = setup();
+    let mock = IMockTermDispatcher { contract_address: mock_address };
+    let mock_system_class_hash: ClassHash = MockSystem3::TEST_CLASS_HASH.try_into().unwrap();
+    let owner = vars::OWNER();
+
+    mock.edit_arg(0, 10);
+    assert(mock.get_arg(0) == 10, 'get_arg failed');
+    // test initialization
+    let mut system_calldata_1 = ArrayTrait::new();
+    mock.add_system(mock_system_class_hash, system_calldata_1);
+    // test events
+    assert_arg_changed_event(mock_address, 0, 0, 10);
+    assert_rand_emit_event(mock_address);
+    helper::assert_no_events_left(mock_address);
+}
+
 fn assert_arg_changed_event(
     contract_addr: ContractAddress, index: u256, old_value: felt252, new_value: felt252
 ) {
@@ -296,5 +349,13 @@ fn assert_arg_changed_event(
     assert(
         event == MockTerm::Event::ArgChanged(MockTerm::ArgChanged { index, old_value, new_value }),
         'Wrong Event'
+    );
+}
+
+fn assert_rand_emit_event(contract_addr: ContractAddress,) {
+    let event = pop_log::<MockSystem3::Event>(contract_addr).unwrap();
+    assert(
+        event == MockSystem3::Event::RandEmit(MockSystem3::RandEmit { res: 2114 }),
+        'Wrong rand Event'
     );
 }
