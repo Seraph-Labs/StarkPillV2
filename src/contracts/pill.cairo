@@ -320,17 +320,17 @@ mod StarkPill {
         // ---------------------------- create attributes --------------------------- //
         // @dev emits 6 AttributeCreated events
         // attr_id 1 : name, from list_id 1
-        self.erc2114.create_attribute(name_id, AttrType::String(1), '"name"');
+        self.erc2114.create_attribute(name_id, AttrType::String(1), 'name');
         // attr_id 2 : ingredient, from list_id 2
-        self.erc2114.create_attribute(ing_id, AttrType::String(2), '"Ingredient"');
+        self.erc2114.create_attribute(ing_id, AttrType::String(2), 'Ingredient');
         // attr_id 3 : background, list_id 3 
-        self.erc2114.create_attribute(bg_id, AttrType::String(3), '"Background"');
+        self.erc2114.create_attribute(bg_id, AttrType::String(3), 'Background');
         // attr_id 4 : medical bill
-        self.erc2114.create_attribute(mbill_id, AttrType::Number(0), '"Medical Bill"');
+        self.erc2114.create_attribute(mbill_id, AttrType::Number(0), 'Medical Bill');
         // attr_id 5 : fame 
-        self.erc2114.create_attribute(fame_id, AttrType::Number(0), '"Fame"');
+        self.erc2114.create_attribute(fame_id, AttrType::Number(0), 'Fame');
         // attr_id 6 : defame 
-        self.erc2114.create_attribute(defame_id, AttrType::Number(0), '"DeFame"');
+        self.erc2114.create_attribute(defame_id, AttrType::Number(0), 'DeFame');
         // --------------------------- set slot attributes -------------------------- //
         // @dev emits 3 SlotAttributeUpdate events
         // slot_id 1 : name attr_id index 1 -> "TestPill" or "StarkPill"

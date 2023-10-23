@@ -6,8 +6,6 @@ mod MintPillSystem {
     use seraphlabs::tokens::erc2114::utils::{AttrType, AttrTypeTrait};
     use seraphlabs::tokens::constants;
     use starkpill::constants as pill_constants;
-    use starkpill::components::access::AccessControlComponent;
-    use starkpill::components::roles::AdminRoleComponent;
     use starkpill::components::pharmacy::PharmacyComponent;
     // token components
     use seraphlabs::tokens::erc721::{ERC721Component, extensions::ERC721EnumComponent};
@@ -29,7 +27,6 @@ mod MintPillSystem {
     component!(path: ERC3525Component, storage: erc3525, event: ERC3525Event);
     component!(path: ERC2114Component, storage: erc2114, event: ERC2114Event);
     component!(path: ERC2114InvComponent, storage: erc2114_inv, event: ERC2114InvEvent);
-    //component!(path: SRC5Component, storage: src5, event: SRC5Event);
 
     #[storage]
     struct Storage {
@@ -81,7 +78,7 @@ mod MintPillSystem {
         }
 
         fn system_uri(self: @ContractState) -> Array<felt252> {
-            array!['mock implementation of mint', 'pill function in starkpill']
+            array!['starkpill mint pill function']
         }
     }
 
