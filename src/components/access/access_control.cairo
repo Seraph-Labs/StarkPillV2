@@ -209,7 +209,9 @@ mod AccessControlComponent {
                 let caller: ContractAddress = get_caller_address();
                 self.AccessControl_role_member.write((role, account), false);
                 self.emit(RoleRevoked { role, account, sender: caller });
+                return;
             }
+            panic_with_felt252('Caller is missing role');
         }
 
         #[inline(always)]
