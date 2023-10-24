@@ -105,6 +105,15 @@ mod PharmacyComponent {
             IPharmacyImpl::get_pharmacy_addresses(self, currency, index)
         }
 
+        fn l2_reedemtion_approval(
+            self: @ComponentState<TContractState>,
+            project_address: ContractAddress,
+            attr_id: u64,
+            index: felt252
+        ) -> bool {
+            IPharmacyImpl::l2_reedemtion_approval(self, project_address, attr_id, index)
+        }
+
         fn update_stock(
             ref self: ComponentState<TContractState>, attr_id: u64, index: felt252, ammount: u128
         ) {
@@ -189,6 +198,16 @@ mod PharmacyComponent {
                 bool::False => self.spill_pharmacy_bank.read(index),
                 bool::True => self.spill_pharmacy_currency.read(index),
             }
+        }
+
+        #[inline(always)]
+        fn l2_reedemtion_approval(
+            self: @ComponentState<TContractState>,
+            project_address: ContractAddress,
+            attr_id: u64,
+            index: felt252
+        ) -> bool {
+            self.spill_pharmacy_l2_redeemable.read((project_address, attr_id, index))
         }
 
         #[inline(always)]
@@ -325,7 +344,7 @@ mod PharmacyComponent {
         }
 
         // @dev updates l2 project redemption status
-        // DOES check if indexes are valid
+        // DOES check if indexes are non zero
         // DOES check if status is already same 
         // is project address is zero sets attribute as only redeemable
         // EMITS PharmacyL2RedemptionApproval event
