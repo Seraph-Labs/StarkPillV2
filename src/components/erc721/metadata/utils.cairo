@@ -48,7 +48,11 @@ fn generate_pill_uri(
     uri.append(constants::NEXT_TRAIT);
     uri.append(bg_name);
     uri.append(constants::STR_VALUE);
-    uri.append(get_attr_str_value(bg_value));
+    let new_bg_val = match bg_value.is_zero() {
+        bool::False => bg_value,
+        bool::True => constants::NO_BG_ATTR,
+    };
+    uri.append(new_bg_val);
     uri.append(constants::STR_VALUE_END);
     // mbill trait
     uri.append(constants::NEXT_TRAIT);
