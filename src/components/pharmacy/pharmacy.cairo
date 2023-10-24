@@ -99,6 +99,12 @@ mod PharmacyComponent {
             IPharmacyImpl::get_eth_premium(self, attr_id, index)
         }
 
+        fn get_pharmacy_addresses(
+            self: @ComponentState<TContractState>, currency: bool, index: u64
+        ) -> ContractAddress {
+            IPharmacyImpl::get_pharmacy_addresses(self, currency, index)
+        }
+
         fn update_stock(
             ref self: ComponentState<TContractState>, attr_id: u64, index: felt252, ammount: u128
         ) {
@@ -173,6 +179,16 @@ mod PharmacyComponent {
             self: @ComponentState<TContractState>, attr_id: u64, index: felt252
         ) -> u256 {
             self._get_eth_premium(attr_id, index)
+        }
+
+        #[inline(always)]
+        fn get_pharmacy_addresses(
+            self: @ComponentState<TContractState>, currency: bool, index: u64
+        ) -> ContractAddress {
+            match currency {
+                bool::False => self.spill_pharmacy_bank.read(index),
+                bool::True => self.spill_pharmacy_currency.read(index),
+            }
         }
 
         #[inline(always)]
@@ -459,7 +475,7 @@ mod PharmacyComponent {
         fn _set_pharmacy_bank_address(
             ref self: ComponentState<TContractState>, account: ContractAddress
         ) {
-            self.spill_pharmacy_currency.write(0, account);
+            self.spill_pharmacy_bank.write(0, account);
         }
 
         #[inline(always)]

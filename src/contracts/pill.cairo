@@ -103,6 +103,7 @@ trait IStarkPill<TContractState> {
     // -------------------------------- Pharmacy -------------------------------- //
     fn get_stock(self: @TContractState, attr_id: u64, index: felt252) -> (u128, u128);
     fn get_eth_premium(self: @TContractState, attr_id: u64, index: felt252) -> u256;
+    fn get_pharmacy_addresses(self: @TContractState, currency: bool, index: u64) -> ContractAddress;
     fn update_stock(ref self: TContractState, attr_id: u64, index: felt252, ammount: u128);
     fn update_premium(ref self: TContractState, attr_id: u64, index: felt252, ammount: u256);
     fn set_l2_project_redemtion(
@@ -280,8 +281,6 @@ mod StarkPill {
         admin: ContractAddress,
         wallet: ContractAddress,
         currency: ContractAddress,
-        name: felt252,
-        symbol: felt252,
         trait_catalog: ContractAddress
     ) {
         assert(get_caller_address().is_non_zero(), 'Invalid Caller');
@@ -298,7 +297,7 @@ mod StarkPill {
         self.pharmacy.initializer(currency, wallet, constants::PILL_BASE_PRICE);
         // tokens
         self.erc721.initializer();
-        self.erc721_metadata.initializer(name, symbol);
+        self.erc721_metadata.initializer(constants::NAME, constants::SYMBOL);
         self.erc721_enum.initializer();
         self.erc3525.initializer(0);
         // @dev emits 1 TraitCatalogAttached event
@@ -320,17 +319,17 @@ mod StarkPill {
         // ---------------------------- create attributes --------------------------- //
         // @dev emits 6 AttributeCreated events
         // attr_id 1 : name, from list_id 1
-        self.erc2114.create_attribute(name_id, AttrType::String(1), 'name');
+        self.erc2114.create_attribute(name_id, AttrType::String(1), constants::NAME_ID_NAME);
         // attr_id 2 : ingredient, from list_id 2
-        self.erc2114.create_attribute(ing_id, AttrType::String(2), 'Ingredient');
+        self.erc2114.create_attribute(ing_id, AttrType::String(2), constants::ING_ID_NAME);
         // attr_id 3 : background, list_id 3 
-        self.erc2114.create_attribute(bg_id, AttrType::String(3), 'Background');
+        self.erc2114.create_attribute(bg_id, AttrType::String(3), constants::BG_ID_NAME);
         // attr_id 4 : medical bill
-        self.erc2114.create_attribute(mbill_id, AttrType::Number(0), 'Medical Bill');
+        self.erc2114.create_attribute(mbill_id, AttrType::Number(0), constants::MBILL_ID_NAME);
         // attr_id 5 : fame 
-        self.erc2114.create_attribute(fame_id, AttrType::Number(0), 'Fame');
+        self.erc2114.create_attribute(fame_id, AttrType::Number(0), constants::FAME_ID_NAME);
         // attr_id 6 : defame 
-        self.erc2114.create_attribute(defame_id, AttrType::Number(0), 'DeFame');
+        self.erc2114.create_attribute(defame_id, AttrType::Number(0), constants::DEFAME_ID_NAME);
         // --------------------------- set slot attributes -------------------------- //
         // @dev emits 3 SlotAttributeUpdate events
         // slot_id 1 : name attr_id index 1 -> "TestPill" or "StarkPill"
