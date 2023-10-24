@@ -4,7 +4,7 @@ version = 1
 [[package]]
 name = "seraphlabs"
 version = "0.4.1"
-source = "git+https://github.com/Seraph-Labs/Cairo-Contracts.git?branch=release-v0.4.1#ab91ed216d06bd58993b1e9ce43d5682c0cb2714"
+source = "git+https://github.com/Seraph-Labs/Cairo-Contracts.git?branch=release-v0.4.1#cafad23fae3b2335f68080e17038b457ca26bdac"
 
 [[package]]
 name = "souk"
