@@ -11,7 +11,7 @@ const ADMIN_ROLE: felt252 = 'ADMIN_ROLE';
 
 // ---------------------------------- Price --------------------------------- //
 
-const PILL_BASE_PRICE: u256 = 1000_u256;
+const PILL_BASE_PRICE: u256 = 1000000000000000_u256; // 0.001 eth
 
 // ---------------------------------- Slots --------------------------------- //
 const PILL_SLOT: u256 = 1_u256;
@@ -32,10 +32,21 @@ const DEFAME_ID: u64 = 6_u64; // "DeFame"
 // ---------------------------- Attribute Values ---------------------------- //
 // @dev values for attr_id 1 in list id 1
 const NO_ATTR: felt252 = 'Null';
+const NO_BG_ATTR: felt252 = 'White';
 const PILL_NAME: felt252 = 'TestPill';
 const ING_NAME: felt252 = 'PillIngredient';
 const BG_NAME: felt252 = 'PillBackground';
 
+// ----------------------------- Attribute Names ---------------------------- //
+// string type
+const NAME_ID_NAME: felt252 = 'name';
+const ING_ID_NAME: felt252 = 'Ingredient';
+const BG_ID_NAME: felt252 = 'Background';
+
+// number type
+const MBILL_ID_NAME: felt252 = 'Medical Bill';
+const FAME_ID_NAME: felt252 = 'Fame';
+const DEFAME_ID_NAME: felt252 = 'Defame';
 // -------------------------------------------------------------------------- //
 //                                  MetaData                                  //
 // -------------------------------------------------------------------------- //
@@ -80,4 +91,8 @@ const NEXT_TRAIT: felt252 = ',{"trait_type":"';
 const JSON_END: felt252 = ']}';
 // --------------------------------- others --------------------------------- //
 
+const NAME: felt252 = 'GetTestPilledV2';
+const SYMBOL: felt252 = 'TPILLV2';
+// const NAME: felt252 = 'GetStarkPilled';
+// const SYMBOL: felt252 = 'SPILL';
 const VOTE_COOLDOWN: u64 = 86400;
