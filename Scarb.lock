@@ -9,7 +9,7 @@ source = "git+https://github.com/Seraph-Labs/Cairo-Contracts.git?branch=release-
 [[package]]
 name = "souk"
 version = "0.1.0"
-source = "git+https://github.com/Seraph-Labs/Souk-Libs.git?branch=release-v0.1.0#fa60c3b2f4a22699c26d14c215e7c8d664269846"
+source = "git+https://github.com/Seraph-Labs/Souk-Libs.git?branch=release-v0.1.0#3eaf5be6f75cb0f58f50d8037dcca23757999855"
 dependencies = [
  "seraphlabs",
 ]
