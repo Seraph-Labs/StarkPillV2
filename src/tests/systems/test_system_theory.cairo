@@ -31,6 +31,7 @@ trait IMockTerm<TContractState> {
 
 #[starknet::contract]
 mod MockTerm {
+    use core::debug::PrintTrait;
     use super::{ContractAddress, ClassHash};
     use super::Selectors;
     use super::library_call_syscall;
@@ -81,7 +82,14 @@ mod MockTerm {
             selector: felt252,
             system_calldata: Array<felt252>
         ) -> Span<felt252> {
-            library_call_syscall(system, selector, system_calldata.span()).unwrap()
+            match library_call_syscall(system, selector, system_calldata.span()) {
+                Result::Ok(x) => x,
+                Result::Err(e) => {
+                    let err = e.at(0);
+                    panic_with_felt252(*err);
+                    array![].span()
+                },
+            }
         }
     }
 }
@@ -213,6 +221,39 @@ mod MockSystem3 {
     }
 }
 
+#[starknet::contract]
+mod MockSystem4 {
+    use super::{ContractAddress, ClassHash};
+    use super::{get_caller_address, get_contract_address};
+    use super::library_call_syscall;
+    use super::Selectors;
+
+    #[storage]
+    struct Storage {
+        diff_arg_2: felt252
+    }
+
+    #[event]
+    #[derive(Drop, PartialEq, starknet::Event)]
+    enum Event {
+        RandEmit: RandEmit,
+    }
+
+    #[derive(Drop, PartialEq, starknet::Event)]
+    struct RandEmit {
+        #[key]
+        res: felt252,
+    }
+
+    #[generate_trait]
+    #[external(v0)]
+    impl IMockSystemImpl of IMockSystemTrait {
+        fn get_diff_arg(ref self: ContractState) {
+            assert(true == false, 'the call failed');
+        }
+    }
+}
+
 
 fn setup() -> ContractAddress {
     let mut calldata = ArrayTrait::new();
@@ -340,6 +381,17 @@ fn test_other_events_emit() {
     assert_arg_changed_event(mock_address, 0, 0, 10);
     assert_rand_emit_event(mock_address);
     helper::assert_no_events_left(mock_address);
+}
+
+#[test]
+#[available_gas(2000000000)]
+#[should_panic(expected: ('the call failed', 'ENTRYPOINT_FAILED'))]
+fn test_system_execution_fail() {
+    let mock_address = setup();
+    let mock = IMockTermDispatcher { contract_address: mock_address };
+    let mock_system_class_hash: ClassHash = MockSystem4::TEST_CLASS_HASH.try_into().unwrap();
+    let owner = vars::OWNER();
+    mock.execute_system(mock_system_class_hash, Selectors::GET_DIFF_ARG, array![]);
 }
 
 fn assert_arg_changed_event(
