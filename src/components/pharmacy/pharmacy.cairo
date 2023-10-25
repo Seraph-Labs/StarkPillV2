@@ -270,7 +270,7 @@ mod PharmacyComponent {
             let is_only_redeemable = self
                 .spill_pharmacy_l2_redeemable
                 .read((Zeroable::zero(), attr_id, index));
-            assert(!is_only_redeemable, 'Spill: only redemption');
+            assert(!is_only_redeemable, 'SPill: only redemption');
         }
 
         #[inline(always)]
@@ -278,7 +278,7 @@ mod PharmacyComponent {
             self: @ComponentState<TContractState>, project_address: ContractAddress, token_id: u256
         ) {
             let claimed = self.spill_pharmacy_l2_claims.read((project_address, token_id));
-            assert(!claimed, 'Spill: token already claimed');
+            assert(!claimed, 'SPill: token already claimed');
         }
 
         #[inline(always)]
@@ -291,7 +291,7 @@ mod PharmacyComponent {
             let is_redeemable = self
                 .spill_pharmacy_l2_redeemable
                 .read((project_address, attr_id, index));
-            assert(is_redeemable, 'Spill: not redeemable');
+            assert(is_redeemable, 'SPill: not redeemable');
         }
 
         #[inline(always)]
@@ -360,12 +360,12 @@ mod PharmacyComponent {
                 match index_arr.pop_front() {
                     Option::Some(i) => {
                         let index = *i;
-                        assert(index.is_non_zero(), 'Spill: invalid trait index');
+                        assert(index.is_non_zero(), 'SPill: invalid trait index');
                         // assert cur_status is not the same
                         let cur_status = self
                             .spill_pharmacy_l2_redeemable
                             .read((project_address, attr_id, index));
-                        assert(cur_status != redeemable, 'Spill: redeemable already set');
+                        assert(cur_status != redeemable, 'SPill: redeemable already set');
                         // this functions updates approval and emits event
                         self
                             ._update_l2_redemption_approval(
@@ -393,9 +393,9 @@ mod PharmacyComponent {
             received_token_id: u256,
             to: ContractAddress
         ) {
-            assert(token_id.is_non_zero(), 'Spill: invalid token id');
+            assert(token_id.is_non_zero(), 'SPill: invalid token id');
             let caller = get_caller_address();
-            assert(caller.is_non_zero(), 'Spill: zero caller');
+            assert(caller.is_non_zero(), 'SPill: zero caller');
 
             let erc721 = IERC721Dispatcher { contract_address: project_address };
             let owner = erc721.owner_of(token_id);
@@ -404,7 +404,7 @@ mod PharmacyComponent {
             // assert caller is owner or approved
             assert(
                 owner == caller || approved == caller || is_approved_all,
-                'Spill: caller not approved'
+                'SPill: caller not approved'
             );
             // set claims for token id to be true
             self.spill_pharmacy_l2_claims.write((project_address, token_id), true);
@@ -444,6 +444,8 @@ mod PharmacyComponent {
             let currency = self._get_pharmacy_eth_currency();
             let wallet = self._get_pharmacy_bank_address();
             let eth = IERC20Dispatcher { contract_address: currency };
+            assert(eth.balance_of(spender) >= price, 'SPill: not enough eth');
+
             // transfer erh
             let success = eth.transfer_from(spender, wallet, price);
             assert(success, 'SPill: eth transfer failed');
@@ -515,7 +517,7 @@ mod PharmacyComponent {
         fn _set_pharmacy_attribute_only_redeemable(
             ref self: ComponentState<TContractState>, attr_id: u64, index: felt252, redeemable: bool
         ) {
-            assert(index.is_non_zero(), 'Spill: invalid trait index');
+            assert(index.is_non_zero(), 'SPill: invalid trait index');
             let cur_status = self
                 .spill_pharmacy_l2_redeemable
                 .read((Zeroable::zero(), attr_id, index));
