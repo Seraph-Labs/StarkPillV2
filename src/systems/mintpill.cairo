@@ -93,7 +93,7 @@ mod MintPillSystem {
         ) {
             // assert caller is not zero
             let caller = get_caller_address();
-            assert(caller.is_non_zero(), 'caller is zero');
+            assert(caller.is_non_zero(), 'SPill: invalid caller');
 
             // try and purchase with eth
             // this function already checks if caller has the eth to spend
