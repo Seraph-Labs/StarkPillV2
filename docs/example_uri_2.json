@@ -1,0 +1,9 @@
+{
+	"name": "PillIngredient #2",
+	"description": "anequippable ERC2114token for TestPillV2",
+	"image": "https://arweave.net/3tsgIKE0d0F-56pDXRpm2E7a-_c-IfUJB7wyhwDhr9o/PillIngredient/ing_001.png",
+	"attributes": [
+		{ "trait_type": "Ingredient", "value": "Cairo Cap" },
+		{ "trait_type": "Medical Bill", "value": 20000000000000000 }
+	]
+}

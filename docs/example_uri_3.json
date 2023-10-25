@@ -1,0 +1,9 @@
+{
+	"name": "PillBackground #3",
+	"description": "anequippable ERC2114token for TestPillV2",
+	"image": "https://arweave.net/3tsgIKE0d0F-56pDXRpm2E7a-_c-IfUJB7wyhwDhr9o/PillBackground/bg_001.png",
+	"attributes": [
+		{ "trait_type": "Background", "value": "Yellow" },
+		{ "trait_type": "Medical Bill", "value": 120000000000000000 }
+	]
+}

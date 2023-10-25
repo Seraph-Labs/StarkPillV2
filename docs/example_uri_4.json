@@ -1,0 +1,12 @@
+{
+	"name": "StarkPill #4",
+	"description": "an ERC2114cairo-2 test runtoken for starkpill",
+	"image": "https://arweave.net/3tsgIKE0d0F-56pDXRpm2E7a-_c-IfUJB7wyhwDhr9o/StarkPill/pill_000000.png",
+	"attributes": [
+		{ "trait_type": "Ingredient", "value": "Null" },
+		{ "trait_type": "Background", "value": "White" },
+		{ "trait_type": "Medical Bill", "value": 1000000000000000 },
+		{ "trait_type": "Fame", "value": 0 },
+		{ "trait_type": "Defame", "value": 0 }
+	]
+}
