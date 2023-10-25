@@ -21,8 +21,6 @@ use starknet::{ContractAddress, ClassHash};
 use starknet::testing::{set_caller_address, set_contract_address, pop_log, pop_log_raw};
 use debug::PrintTrait;
 
-fn HELLO() {}
-
 #[test]
 #[available_gas(2000000000)]
 fn test_mint_pill() {

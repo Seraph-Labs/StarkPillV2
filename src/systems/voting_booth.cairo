@@ -83,7 +83,7 @@ mod VBoothSystem {
     #[external(v0)]
     impl VBoothSystemImpl of interface::ISoukSystem<ContractState> {
         fn name(self: @ContractState) -> felt252 {
-            'Spill Vbooth V1'
+            'SPill Vbooth V1'
         }
 
         fn author(self: @ContractState) -> felt252 {
@@ -121,19 +121,19 @@ mod VBoothSystem {
         fn execute(ref self: ContractState, token_id: u256, ammount: felt252, vote: bool) {
             // assert caller is not zero
             let caller = get_caller_address();
-            assert(caller.is_non_zero(), 'Spill: invalid caller');
+            assert(caller.is_non_zero(), 'SPill: invalid caller');
             // assert caller is not spill address
             let spill_contract = get_contract_address();
-            assert(caller != spill_contract, 'Spill: cant call self');
+            assert(caller != spill_contract, 'SPill: cant call self');
             // assert token_id is exist
-            assert(self.erc721._exist(token_id), 'Spill: invalid token id');
+            assert(self.erc721._exist(token_id), 'SPill: invalid token_id');
             // assert token_id is a pill
             assert(
                 self.erc3525.slot_of(token_id) == pill_constants::PILL_SLOT,
-                'Spill: cant vote on non pill'
+                'SPill: cant vote on non pill'
             );
             // assert ammount is not zero
-            assert(ammount.is_non_zero(), 'Spill: invalid vote ammount');
+            assert(ammount.is_non_zero(), 'SPill: invalid vote ammount');
             // ---------------------------- use voting power ---------------------------- //
             let cur_time_stamp = get_block_timestamp();
             let mut votes_left = ammount;
@@ -158,7 +158,7 @@ mod VBoothSystem {
 
             // assert that there are no votes_left
             // if there are votes left that means that the caller does not have enough voting power
-            assert(votes_left.is_zero(), 'Spill: not enough voting power');
+            assert(votes_left.is_zero(), 'SPill: not enough voting power');
 
             // ------------------------- add attributes to token ------------------------ //
             // @dev EMITS 1 TokenAttributeUpdate event
