@@ -33,7 +33,7 @@ const DEFAME_ID: u64 = 6_u64; // "DeFame"
 // @dev values for attr_id 1 in list id 1
 const NO_ATTR: felt252 = 'Null';
 const NO_BG_ATTR: felt252 = 'White';
-const PILL_NAME: felt252 = 'TestPill';
+const PILL_NAME: felt252 = 'StarkPill';
 const ING_NAME: felt252 = 'PillIngredient';
 const BG_NAME: felt252 = 'PillBackground';
 
