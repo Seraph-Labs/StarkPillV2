@@ -16,6 +16,8 @@ use seraphlabs::tokens::erc2114::{
     ERC2114Component, extensions::{ERC2114InvComponent, ERC2114SlotAttrComponent}
 };
 use souk::systems::SoukTermComponent;
+use seraphlabs::tokens::erc3525::ERC3525Component;
+use seraphlabs::tokens::erc721::ERC721Component;
 use starkpill::constants as spill_constants;
 use souk::constants as souk_constants;
 use souk::systems::utils::{SystemStatus, SystemStatusTrait};
@@ -499,5 +501,102 @@ fn assert_system_status_update_event(
             )
         ),
         'wrong SystemStatusUpdate event'
+    );
+}
+// --------------------------------- ERC721 --------------------------------- //
+
+#[inline(always)]
+fn assert_transfer_event(
+    contract_addr: ContractAddress, from: ContractAddress, to: ContractAddress, token_id: u256
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC721Event(
+            ERC721Component::Event::Transfer(ERC721Component::Transfer { from, to, token_id })
+        ),
+        'Wrong Transfer Event'
+    );
+}
+
+#[inline(always)]
+fn assert_approval_event(
+    contract_addr: ContractAddress,
+    owner: ContractAddress,
+    approved: ContractAddress,
+    token_id: u256
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC721Event(
+            ERC721Component::Event::Approval(
+                ERC721Component::Approval { owner, approved, token_id }
+            )
+        ),
+        'Wrong Approval Event'
+    );
+}
+
+#[inline(always)]
+fn assert_approval_for_all_event(
+    contract_addr: ContractAddress,
+    owner: ContractAddress,
+    operator: ContractAddress,
+    approved: bool
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC721Event(
+            ERC721Component::Event::ApprovalForAll(
+                ERC721Component::ApprovalForAll { owner, operator, approved }
+            )
+        ),
+        'Wrong ApprovalForAll Event'
+    );
+}
+
+// --------------------------------- ERC3525 -------------------------------- //
+
+#[inline(always)]
+fn assert_transfer_value_event(
+    contract_addr: ContractAddress, from_token_id: u256, to_token_id: u256, value: u256,
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC3525Event(
+            ERC3525Component::Event::TransferValue(
+                ERC3525Component::TransferValue { from_token_id, to_token_id, value }
+            )
+        ),
+        'Wrong TransferValue Event'
+    );
+}
+
+#[inline(always)]
+fn assert_approval_value_event(
+    contract_addr: ContractAddress, token_id: u256, operator: ContractAddress, value: u256,
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC3525Event(
+            ERC3525Component::Event::ApprovalValue(
+                ERC3525Component::ApprovalValue { token_id, operator, value }
+            )
+        ),
+        'Wrong ApprovalValue Event'
+    );
+}
+
+#[inline(always)]
+fn assert_slot_changed_event(
+    contract_addr: ContractAddress, token_id: u256, old_slot: u256, new_slot: u256,
+) {
+    let event = pop_log::<SPill::Event>(contract_addr).unwrap();
+    assert(
+        event == SPill::Event::ERC3525Event(
+            ERC3525Component::Event::SlotChanged(
+                ERC3525Component::SlotChanged { token_id, old_slot, new_slot }
+            )
+        ),
+        'Wrong SlotChanged Event'
     );
 }
