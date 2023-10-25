@@ -600,3 +600,58 @@ fn assert_slot_changed_event(
         'Wrong SlotChanged Event'
     );
 }
+
+// --------------------------------- vbooth --------------------------------- //
+
+#[inline(always)]
+fn assert_pill_vote_event(
+    contract_addr: ContractAddress,
+    voter: ContractAddress,
+    token_id: u256,
+    vote: bool,
+    ammount: felt252
+) {
+    let event = pop_log::<VBoothSystem::Event>(contract_addr).unwrap();
+    assert(
+        event == VBoothSystem::Event::PillVote(
+            VBoothSystem::PillVote { voter, token_id, vote, ammount }
+        ),
+        'Wrong PillVote Event'
+    );
+}
+
+#[inline(always)]
+fn assert_pill_vote_time_stamp_event(
+    contract_addr: ContractAddress, token_id: u256, time_stamp: u64,
+) {
+    let event = pop_log::<VBoothSystem::Event>(contract_addr).unwrap();
+    assert(
+        event == VBoothSystem::Event::PillVoteTimeStamp(
+            VBoothSystem::PillVoteTimeStamp { token_id, time_stamp }
+        ),
+        'Wrong PillVoteTimeStamp Event'
+    );
+}
+
+#[inline(always)]
+fn assert_trait_vote_time_stamp_event(
+    contract_addr: ContractAddress, pill_id: u256, token_id: u256, time_stamp: u64,
+) {
+    let event = pop_log::<VBoothSystem::Event>(contract_addr).unwrap();
+    assert(
+        event == VBoothSystem::Event::TraitVoteTimeStamp(
+            VBoothSystem::TraitVoteTimeStamp { pill_id, token_id, time_stamp }
+        ),
+        'Wrong TraitVoteTimeStamp Event'
+    );
+}
+
+// helpers
+fn drop_all_events(address: ContractAddress) {
+    loop {
+        match pop_log_raw(address) {
+            Option::Some(_) => { continue; },
+            Option::None => { break; },
+        };
+    }
+}
