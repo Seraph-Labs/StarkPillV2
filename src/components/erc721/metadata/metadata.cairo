@@ -160,8 +160,8 @@ mod ERC721MetadataComponent {
             let defame_id = pill_constants::DEFAME_ID;
             // get uri values
             // read straight from storage to get base
-            let ing_base: AttrBase = erc2114.attr_base.read(ing_id);
-            let bg_base: AttrBase = erc2114.attr_base.read(bg_id);
+            let ing_base: AttrBase = erc2114.ERC2114_attr_base.read(ing_id);
+            let bg_base: AttrBase = erc2114.ERC2114_attr_base.read(bg_id);
 
             let name = erc2114_slot_attr.slot_attribute_value(slot_id, name_id);
             let base_uri = self._get_base_uri();
@@ -212,7 +212,7 @@ mod ERC721MetadataComponent {
 
             let name = erc2114_slot_attr.slot_attribute_value(slot_id, name_id);
             let base_uri = self._get_base_uri();
-            let index = erc2114.token_attr_value.read((token_id, trait_attr_id));
+            let index = erc2114.ERC2114_token_attr_value.read((token_id, trait_attr_id));
             let trait_name = erc2114.attribute_name(trait_attr_id);
             let trait_value = erc2114.attribute_value(token_id, trait_attr_id);
             let mbill_name = erc2114.attribute_name(mbill_id);
@@ -242,7 +242,7 @@ mod ERC721MetadataComponent {
 
             let name = erc2114_slot_attr.slot_attribute_value(slot_id, name_id);
             let base_uri = self._get_base_uri();
-            let index = erc2114.token_attr_value.read((token_id, trait_attr_id));
+            let index = erc2114.ERC2114_token_attr_value.read((token_id, trait_attr_id));
             let trait_name = erc2114.attribute_name(trait_attr_id);
             let trait_value = erc2114.attribute_value(token_id, trait_attr_id);
             let mbill_name = erc2114.attribute_name(mbill_id);
