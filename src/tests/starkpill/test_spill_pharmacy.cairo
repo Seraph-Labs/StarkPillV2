@@ -167,7 +167,7 @@ fn test_non_admin_l2_redeem_approval() {
 
 #[test]
 #[available_gas(2000000000)]
-#[should_panic(expected: ('Spill: invalid trait index', 'ENTRYPOINT_FAILED'))]
+#[should_panic(expected: ('SPill: invalid trait index', 'ENTRYPOINT_FAILED'))]
 fn test_zero_attr_id_l2_redeem_approval() {
     let (spill, trait_cat, registry, eth) = utils::setup();
 
@@ -183,7 +183,7 @@ fn test_zero_attr_id_l2_redeem_approval() {
 
 #[test]
 #[available_gas(2000000000)]
-#[should_panic(expected: ('Spill: redeemable already set', 'ENTRYPOINT_FAILED'))]
+#[should_panic(expected: ('SPill: redeemable already set', 'ENTRYPOINT_FAILED'))]
 fn test_repeat_l2_redeem_approval() {
     let (spill, trait_cat, registry, eth) = utils::setup();
 
